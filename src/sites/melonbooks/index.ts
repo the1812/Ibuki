@@ -5,7 +5,12 @@ const genreMap: Record<string, string> = {
   トランス: 'Trance',
   ハウス: 'House',
   ドラムンベース: 'Drum & Bass',
+  クラブ: 'Club',
+  ユーロビート: 'Eurobeat',
+  ハードコア: 'Hardcore',
+  エレクトロ: 'Electro',
 }
+const genreIgnore = ['コンピレーション', 'オムニバス', '東方Project']
 const getTrackText = async () => {
   const descTitle = document.querySelector('#description h2')
   return descTitle?.nextElementSibling?.textContent.trim() ?? ''
@@ -27,7 +32,7 @@ export const melonbooks: SiteAdaptor = {
     const price = document.querySelector('#main_new .price')
     const genreTags = [...document.querySelectorAll('#related_tags li a')]
       .map(it => it.textContent.trim().match(/音楽\((.+)\)/)?.[1])
-      .filter(it => it !== undefined && it !== '東方Project')
+      .filter(it => it !== undefined && !genreIgnore.includes(it))
       .map(it => (it in genreMap ? genreMap[it] : it))
     return {
       id: '',
@@ -43,7 +48,7 @@ export const melonbooks: SiteAdaptor = {
   getTrackText,
   getTrackData: async ({ trackRegex }) => {
     const text = await getTrackText()
-    const matches = [...text.matchAll(trackRegex)]
+    const matches = [...text.matchAll(new RegExp(trackRegex, 'g'))]
     return matches.map(m => {
       const defaultItem: TrackData = {
         trackNumber: 1,
