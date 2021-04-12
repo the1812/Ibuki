@@ -1,0 +1,25 @@
+{
+  "name": "Ibuki",
+  "description": "THBWiki 专辑代码生成",
+  "updateURL": "https://cdn.jsdelivr.net/gh/the1812/Ibuki@master/dist/ibuki.user.js",
+  "downloadURL": "https://cdn.jsdelivr.net/gh/the1812/Ibuki@master/dist/ibuki.user.js",
+  "version": "1.0.0",
+  "author": "Grant Howard",
+  "copyright": "2021, Grant Howard (https://github.com/the1812)",
+  "licence": "MIT",
+  "match": "https://www.melonbooks.co.jp/detail/detail.php?product_id=*",
+  "run-at": "document-start",
+  "supportURL": "https://github.com/the1812/Ibuki/issues",
+  "homepage": "https://github.com/the1812/Ibuki",
+  "grant": [
+    "unsafeWindow",
+    "GM_getValue",
+    "GM_setValue",
+    "GM_deleteValue",
+    "GM_setClipboard",
+    "GM_info",
+    "GM_xmlhttpRequest",
+    "GM_registerMenuCommand",
+    "GM_unregisterMenuCommand"
+  ]
+}

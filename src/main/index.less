@@ -1,0 +1,40 @@
+.ibuki {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 12px;
+  z-index: 10;
+  pointer-events: none;
+  box-sizing: border-box;
+
+  & * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  &.hide {
+    opacity: 0;
+    .ibuki-main-window {
+      pointer-events: none;
+    }
+  }
+  &-main-window {
+    width: 400px;
+    word-break: break-all;
+    pointer-events: initial;
+    padding: 12px;
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #8884;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    overflow: auto;
+    pre {
+      border: none;
+      overflow: auto;
+    }
+  }
+}
