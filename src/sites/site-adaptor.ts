@@ -1,7 +1,13 @@
 import { AlbumData, OrderDetail, TrackData } from '../types'
 
 export interface SiteAdaptorContext {
-  trackRegex: RegExp
+  trackRegex: string
+  separators: {
+    circle: string
+    originals: string
+    artists: string
+    lyricists: string
+  }
 }
 export interface SiteAdaptor {
   isMatch: () => boolean

@@ -1,25 +1,29 @@
+import { SiteAdaptorContext } from '../sites/site-adaptor'
 import { AlbumData, OrderDetail, TrackData } from '../types'
 import { matchOriginal } from './original-search'
 
-const trySplit = (text: string, mapFn: (s: string) => string = s => s) => {
-  return text.split(/[,，]/).map(mapFn).join('，')
+const trySplit = (text: string, separator: string, mapFn: (s: string) => string = s => s) => {
+  console.log('[trySplit]', text, separator, text.split(new RegExp(separator)))
+  return text
+    .split(new RegExp(separator))
+    .map(it => it.trim())
+    .map(mapFn)
+    .join('，')
 }
-export const generateCode = (data: {
-  albumData: AlbumData
-  trackData: TrackData[]
-  orderDetails: OrderDetail[]
-}) => {
+export const generateCode = (
+  data: {
+    albumData: AlbumData
+    trackData: TrackData[]
+    orderDetails: OrderDetail[]
+  },
+  context: SiteAdaptorContext
+) => {
   const {
-    albumData: {
-      title,
-      circle,
-      id,
-      genre,
-      price,
-    },
+    albumData: { title, circle, id, genre, price },
     trackData,
     orderDetails,
   } = data
+  const { separators } = context
   return `{{同人专辑头部}}
 
 == 专辑信息 ==
@@ -39,15 +43,17 @@ export const generateCode = (data: {
 }}
 {{通贩列表|
 | 官方 =
-${orderDetails.map(({ type, id, title }) => {
-  return `
+${orderDetails
+  .map(({ type, id, title }) => {
+    return `
 {{通贩网址|
 | 类型 = ${type}
 | 编号 = ${id}
 | 标题 = ${title || ''}
 }}
 `.trim()
-}).join('\n')}
+  })
+  .join('\n')}
 
 }}
 
@@ -67,21 +73,21 @@ ${orderDetails.map(({ type, id, title }) => {
 == 曲目列表 ==
 {{专辑曲目列表|
 | 嵌套 =
-${trackData.map(track => {
-  return `
+${trackData
+  .map(track => {
+    return `
 {{同人曲目信息|
 |名称 = ${track.title}
 |时长 = ${track.time}
-|编曲 = ${trySplit(track.artists)}
+|编曲 = ${trySplit(track.artists, separators.artists)}
 |演唱 =
-${track.lyricists ? `|作词 = ${trySplit(track.lyricists)}\n` : ''}|原曲 = ${trySplit(
-    track.originals,
-    matchOriginal
-  )}
+${
+  track.lyricists ? `|作词 = ${trySplit(track.lyricists, separators.lyricists)}\n` : ''
+}|原曲 = ${trySplit(track.originals, separators.originals, matchOriginal)}
 }}
 `.trim()
-}).join('\n')}
-
+  })
+  .join('\n')}
 }}
 
 == 评论 ==

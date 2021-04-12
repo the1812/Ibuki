@@ -13,7 +13,7 @@ const togglePanel = async () => {
     document.body.appendChild(root)
   }
 }
-GM_registerMenuCommand('探测', togglePanel)
+GM_registerMenuCommand('Toggle panel', togglePanel)
 document.addEventListener('keydown', e => {
   const ctrl = e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey
   if (ctrl && e.key === 'i') {

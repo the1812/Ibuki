@@ -1,7 +1,11 @@
 {
   "cSpell.words": [
+    "Eurobeat",
     "Ibuki",
     "melonbooks",
     "popperjs"
-  ]
+  ],
+  "files.associations": {
+    "*.user.js": "plain"
+  }
 }

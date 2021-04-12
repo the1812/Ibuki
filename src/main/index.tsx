@@ -4,6 +4,7 @@ import { generateCode } from '../wiki/code-generate'
 import './index.less'
 import { AlbumData, TrackData } from '../types'
 
+const defaultSeparator = '[，,]'
 const emptyAlbumData: AlbumData = {
   id: '',
   coverImage: '',
@@ -14,8 +15,18 @@ const emptyAlbumData: AlbumData = {
   discCount: 1,
   price: '',
 }
+const savedContext = GM_getValue<SiteAdaptorContext>('context', {
+  trackRegex: '',
+  separators: {
+    circle: defaultSeparator,
+    artists: defaultSeparator,
+    lyricists: defaultSeparator,
+    originals: defaultSeparator,
+  },
+})
 export const Main = () => {
-  const [trackRegex, setTrackRegex] = useState('')
+  const [trackRegex, setTrackRegex] = useState(savedContext.trackRegex)
+  const [separators, setSeparators] = useState(savedContext.separators)
   const [albumData, setAlbumData] = useState<AlbumData>(emptyAlbumData)
   const [trackData, setTrackData] = useState<TrackData[]>([])
   const [code, setCode] = useState('')
@@ -38,20 +49,25 @@ export const Main = () => {
       }
       const adaptor = await getSiteAdaptor()
       const context: SiteAdaptorContext = {
-        trackRegex: new RegExp(trackRegex, 'g'),
+        trackRegex,
+        separators,
       }
       console.log('run with regex = ', context.trackRegex)
+      GM_setValue('context', context)
       const newAlbumData = await adaptor.getAlbumData(context)
       const newTrackData = await adaptor.getTrackData(context)
       if (newTrackData.length === 0) {
         return
       }
       console.time('code')
-      const newCode = generateCode({
-        albumData: newAlbumData,
-        trackData: newTrackData,
-        orderDetails: await adaptor.getOrderDetails(context),
-      })
+      const newCode = generateCode(
+        {
+          albumData: newAlbumData,
+          trackData: newTrackData,
+          orderDetails: await adaptor.getOrderDetails(context),
+        },
+        context
+      )
       console.timeEnd('code')
       setAlbumData(newAlbumData)
       setTrackData(newTrackData)
@@ -62,7 +78,7 @@ export const Main = () => {
     } finally {
       setIsBusy(false)
     }
-  }, [trackRegex])
+  }, [trackRegex, separators])
   return (
     <div className='ibuki-main-window'>
       <div className='site-data'></div>
@@ -78,6 +94,20 @@ export const Main = () => {
             }}
           />
         </div>
+        <>
+          {Object.entries(separators).map(([name, value]) => {
+            return (
+              <div className='input-row' key={name}>
+                {name} separator:
+                <input
+                  type='text'
+                  value={value}
+                  onChange={e => setSeparators({ ...separators, [name]: e.target.value })}
+                />
+              </div>
+            )
+          })}
+        </>
       </div>
       <button disabled={isBusy} onClick={start}>
         Start
@@ -86,7 +116,8 @@ export const Main = () => {
       <div className='track-data'>{trackData.length} track(s) detected.</div>
       <div className='code'>
         {code.length} bytes of wiki code generated.
-        <button onClick={copyCode}>Copy</button>
+        <button disabled={code.length === 0} onClick={copyCode}>Copy</button>
+        <pre>{code}</pre>
       </div>
     </div>
   )
