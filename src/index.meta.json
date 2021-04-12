@@ -1,6 +1,6 @@
 {
   "name": "Ibuki",
-  "description": "THBWiki 专辑代码生成",
+  "description": "THBWiki album code prototyping",
   "updateURL": "https://cdn.jsdelivr.net/gh/the1812/Ibuki@master/dist/ibuki.user.js",
   "downloadURL": "https://cdn.jsdelivr.net/gh/the1812/Ibuki@master/dist/ibuki.user.js",
   "version": "1.0.0",

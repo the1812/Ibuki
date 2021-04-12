@@ -1,7 +1,7 @@
 {
   "name": "ibuki",
   "version": "1.0.0",
-  "description": "Collect THBWiki code from other sites",
+  "description": "THBWiki album code prototyping",
   "main": "dist/ibuki.user.js",
   "repository": "https://github.com/the1812/Ibuki",
   "author": "Grant Howard",
