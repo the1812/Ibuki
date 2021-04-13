@@ -1,2 +1,2 @@
 # Ibuki
-THBWiki album code prototyping.
+(Demo) THBWiki album code prototyping.
