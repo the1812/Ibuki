@@ -29,7 +29,7 @@ export const melonbooks: SiteAdaptor = {
       return element?.nextElementSibling?.textContent.trim()
     }
     const date = tableData('発行日')
-    const price = document.querySelector('#main_new .price')
+    const price = document.querySelector('#main_new .price, #title .price')
     const genreTags = [...document.querySelectorAll('#related_tags li a')]
       .map(it => it.textContent.trim().match(/音楽\((.+)\)/)?.[1])
       .filter(it => it !== undefined && !genreIgnore.includes(it))
