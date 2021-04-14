@@ -51,15 +51,23 @@ export const melonbooks: SiteAdaptor = {
     const matches = [...text.matchAll(new RegExp(trackRegex, 'g'))]
     return matches.map(m => {
       const defaultItem: TrackData = {
-        trackNumber: 1,
-        discNumber: 1,
         time: '',
         title: '',
         originals: '',
-        artists: '',
+        vocals: '',
+        arrangers: '',
         lyricists: '',
       }
-      return Object.assign({}, defaultItem, m.groups)
+      const trackKeys = Object.keys(defaultItem)
+      const mappedPairs = Object.entries(m.groups).map(([key, value]) => {
+        const matchKeys = trackKeys.filter(it => it.startsWith(key))
+        const normalizedValue = value || ''
+        if (matchKeys.length === 1) {
+          return [matchKeys[0], normalizedValue]
+        }
+        return [key, normalizedValue]
+      })
+      return { ...defaultItem, ...Object.fromEntries(mappedPairs) }
     })
   },
   getOrderDetails: async () => {

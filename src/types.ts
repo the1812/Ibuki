@@ -11,13 +11,12 @@ export interface AlbumData {
   circle: string
 }
 export interface TrackData {
-  trackNumber: number
-  discNumber: number
   title: string
   time: string
 
   originals: string
-  artists: string
+  arrangers: string
+  vocals: string
   lyricists: string
 }
 export interface OrderDetail {

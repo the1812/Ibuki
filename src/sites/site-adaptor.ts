@@ -5,7 +5,8 @@ export interface SiteAdaptorContext {
   separators: {
     circle: string
     originals: string
-    artists: string
+    arrangers: string
+    vocals: string
     lyricists: string
   }
 }

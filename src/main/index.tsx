@@ -15,15 +15,23 @@ const emptyAlbumData: AlbumData = {
   discCount: 1,
   price: '',
 }
-const savedContext = GM_getValue<SiteAdaptorContext>('context', {
+const defaultContext: SiteAdaptorContext = {
   trackRegex: '',
   separators: {
     circle: defaultSeparator,
-    artists: defaultSeparator,
+    arrangers: defaultSeparator,
+    vocals: defaultSeparator,
     lyricists: defaultSeparator,
     originals: defaultSeparator,
   },
-})
+}
+const savedContext = GM_getValue<SiteAdaptorContext>('context', defaultContext)
+savedContext.separators = {
+  ...defaultContext.separators,
+  ...Object.fromEntries(
+    Object.entries(savedContext.separators).filter(([key]) => key in defaultContext.separators)
+  ),
+}
 export const Main = () => {
   const [trackRegex, setTrackRegex] = useState(savedContext.trackRegex)
   const [separators, setSeparators] = useState(savedContext.separators)
@@ -74,6 +82,7 @@ export const Main = () => {
       setCode(newCode)
     } catch (error) {
       console.error(error)
+      alert(error)
       resetOutput()
     } finally {
       setIsBusy(false)
@@ -116,7 +125,9 @@ export const Main = () => {
       <div className='track-data'>{trackData.length} track(s) detected.</div>
       <div className='code'>
         {code.length} bytes of wiki code generated.
-        <button disabled={code.length === 0} onClick={copyCode}>Copy</button>
+        <button disabled={code.length === 0} onClick={copyCode}>
+          Copy
+        </button>
         <pre>{code}</pre>
       </div>
     </div>

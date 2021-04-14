@@ -10,6 +10,12 @@ const trySplit = (text: string, separator: string, mapFn: (s: string) => string 
     .map(mapFn)
     .join('，')
 }
+const optionalField = (fieldName: string, splitData: string) => {
+  if (!splitData) {
+    return ''
+  }
+  return `|${fieldName} = ${splitData}`
+}
 export const generateCode = (
   data: {
     albumData: AlbumData
@@ -23,6 +29,7 @@ export const generateCode = (
     trackData,
     orderDetails,
   } = data
+  console.log(data)
   const { separators } = context
   return `{{同人专辑头部}}
 
@@ -32,7 +39,7 @@ export const generateCode = (
 | 封面角色 =
 | 名称 = ${title}
 | 译名 =
-| 制作方 = ${circle}
+| 制作方 = ${trySplit(circle, separators.circle)}
 | 展会 =
 | 编号 = ${id}
 | 类型 = 全长
@@ -79,13 +86,12 @@ ${trackData
 {{同人曲目信息|
 |名称 = ${track.title}
 |时长 = ${track.time}
-|编曲 = ${trySplit(track.artists, separators.artists)}
-|演唱 =
-${
-  track.lyricists ? `|作词 = ${trySplit(track.lyricists, separators.lyricists)}\n` : ''
-}|原曲 = ${trySplit(track.originals, separators.originals, matchOriginal)}
+${optionalField('编曲', trySplit(track.arrangers, separators.arrangers))}
+${optionalField('演唱', trySplit(track.vocals, separators.vocals))}
+${optionalField('作词', trySplit(track.lyricists, separators.lyricists))}
+${optionalField('原曲', trySplit(track.originals, separators.originals, matchOriginal))}
 }}
-`.trim()
+`.trim().replace(/\n\n/g, '\n')
   })
   .join('\n')}
 }}
